@@ -18,8 +18,11 @@
 package org.apache.zeppelin.resource;
 
 import com.google.gson.Gson;
+<<<<<<< HEAD
 import com.google.gson.GsonBuilder;
 
+=======
+>>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
 import org.apache.zeppelin.interpreter.InterpreterGroup;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess;
 import org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService;
@@ -57,10 +60,14 @@ public class ResourcePoolUtils {
         try {
           client = remoteInterpreterProcess.getClient();
           List<String> resourceList = client.resoucePoolGetAll();
+<<<<<<< HEAD
           GsonBuilder gsonBuilder = new GsonBuilder();
           gsonBuilder.registerTypeAdapter(Resource.class, new ResourceSerializer());
           Gson gson = gsonBuilder.create();
           
+=======
+          Gson gson = new Gson();
+>>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
           for (String res : resourceList) {
             resourceSet.add(gson.fromJson(res, Resource.class));
           }

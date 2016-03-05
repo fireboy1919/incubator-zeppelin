@@ -343,6 +343,7 @@ public class RemoteInterpreterServer
         }
 
         String interpreterResultMessage = result.message();
+<<<<<<< HEAD
          
         InterpreterResult combinedResult;
         if (interpreterResultMessage != null && !interpreterResultMessage.isEmpty()) {
@@ -350,12 +351,22 @@ public class RemoteInterpreterServer
           logger.info("*****\n\nSaving to resource pool named: " +
             context.getResourcePool().getClass().getName() + ".\nMessage is " +
             message.length() + " bytes long.\n*****\n\n");
+=======
+
+        InterpreterResult combinedResult;
+        if (interpreterResultMessage != null && !interpreterResultMessage.isEmpty()) {
+          message += interpreterResultMessage;
+>>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
           combinedResult = new InterpreterResult(result.code(), result.type(), message);
         } else {
           combinedResult = new InterpreterResult(result.code(), outputType, message);
         }
+<<<<<<< HEAD
         
         logger.info("Saving to resource pool.");
+=======
+
+>>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
         // put result into resource pool
         context.getResourcePool().put(
             context.getNoteId(),
