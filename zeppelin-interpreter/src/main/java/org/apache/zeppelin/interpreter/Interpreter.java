@@ -98,7 +98,21 @@ public abstract class Interpreter {
    * @return list of possible completion. Return empty list if there're nothing to return.
    */
   public abstract List<String> completion(String buf, int cursor);
+  
+  /**
+   * Puts the saved results into a resource pool for use in other systems.
+   *
+   * @param result previously generated interpreter result.
+   * @param context - the interpreter context containing the resource pool.
+   * @return list of possible completion. Return empty list if there're nothing to return.
+   */
 
+  public void saveResultToResourcePool(InterpreterResult result, InterpreterContext context) {
+    context.getResourcePool().put(context.getNoteId() + "/" + context.getParagraphId(),
+        result.message());
+  }
+  
+  
   /**
    * Interpreter can implements it's own scheduler by overriding this method.
    * There're two default scheduler provided, FIFO, Parallel.

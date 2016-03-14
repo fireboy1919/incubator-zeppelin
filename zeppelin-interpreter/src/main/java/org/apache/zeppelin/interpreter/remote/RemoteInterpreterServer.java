@@ -343,15 +343,19 @@ public class RemoteInterpreterServer
         }
 
         String interpreterResultMessage = result.message();
-
+         
         InterpreterResult combinedResult;
         if (interpreterResultMessage != null && !interpreterResultMessage.isEmpty()) {
           message += interpreterResultMessage;
+          logger.info("*****\n\nSaving to resource pool named: " +
+            context.getResourcePool().getClass().getName() + ".\nMessage is " +
+            message.length() + " bytes long.\n*****\n\n");
           combinedResult = new InterpreterResult(result.code(), result.type(), message);
         } else {
           combinedResult = new InterpreterResult(result.code(), outputType, message);
         }
-
+        
+        logger.info("Saving to resource pool.");
         // put result into resource pool
         context.getResourcePool().put(
             context.getNoteId(),
@@ -654,6 +658,7 @@ public class RemoteInterpreterServer
     Gson gson = new Gson();
 
     for (Resource r : resourceSet) {
+      
       result.add(gson.toJson(r));
     }
 

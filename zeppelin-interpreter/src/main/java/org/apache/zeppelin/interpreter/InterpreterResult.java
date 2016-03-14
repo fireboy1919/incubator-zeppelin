@@ -19,6 +19,8 @@ package org.apache.zeppelin.interpreter;
 
 import java.io.Serializable;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.zeppelin.resource.ResourceId;
+
 import java.util.*;
 
 /**
@@ -52,23 +54,34 @@ public class InterpreterResult implements Serializable {
   Code code;
   Type type;
   String msg;
+  ResourceId resourceId;
 
   public InterpreterResult(Code code) {
     this.code = code;
     this.msg = null;
     this.type = Type.TEXT;
+    this.resourceId = null;
   }
 
   public InterpreterResult(Code code, String msg) {
     this.code = code;
     this.msg = getData(msg);
     this.type = getType(msg);
+    this.resourceId = null;
   }
 
   public InterpreterResult(Code code, Type type, String msg) {
     this.code = code;
     this.msg = msg;
     this.type = type;
+    this.resourceId = null;
+  }
+  
+  public InterpreterResult(Code code, Type type, String msg, ResourceId resourceId) {
+    this.code = code;
+    this.msg = msg;
+    this.type = type;
+    this.resourceId = resourceId;
   }
 
   /**
@@ -128,6 +141,10 @@ public class InterpreterResult implements Serializable {
       }
     }
     return typesLastIndexInMsg;
+  }
+  
+  public ResourceId resourceId() {
+    return resourceId;
   }
 
   public Code code() {

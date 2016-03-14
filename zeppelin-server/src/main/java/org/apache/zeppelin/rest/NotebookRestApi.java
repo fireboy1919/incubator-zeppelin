@@ -33,13 +33,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.model.Build;
 import org.apache.zeppelin.interpreter.InterpreterSetting;
 import org.apache.zeppelin.notebook.Note;
 import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.notebook.Paragraph;
+import org.apache.zeppelin.resource.Resource;
 import org.apache.zeppelin.rest.message.CronRequest;
 import org.apache.zeppelin.rest.message.InterpreterSettingListForNoteBind;
 import org.apache.zeppelin.rest.message.NewNotebookRequest;
@@ -433,6 +436,36 @@ public class NotebookRestApi {
     notebookServer.broadcastNote(note);
 
     return new JsonResponse(Status.OK, "").build();
+  }
+  
+
+  /**
+   * Get paragraph result REST API
+   * @param
+   * @return JSON with status.OK
+   * @throws IOException
+   */
+  @GET
+  @Path("{notebookId}/paragraph/{paragraphId}/result")
+  public Response getParagraphResult(@PathParam("notebookId") String notebookId,
+                                     @PathParam("paragraphId") String paragraphId)
+      throws IOException {
+    LOG.info("delete paragraph {} {}", notebookId, paragraphId);
+    
+    Note note = notebook.getNote(notebookId);
+    if (note == null) {
+      return new JsonResponse(Status.NOT_FOUND, "note not found.").build();
+    }
+
+    Paragraph p = note.getParagraph(paragraphId);
+    if (p == null) {
+      return new JsonResponse(Status.NOT_FOUND, "paragraph not found.").build();
+    }
+    
+    ResponseBuilder builder = Response.ok(p.getResultFromPool().message())
+        .header("Content-Disposition", "attachemnt; filename=\"" + paragraphId + ".tsv");
+    
+    return builder.build();
   }
 
   /**

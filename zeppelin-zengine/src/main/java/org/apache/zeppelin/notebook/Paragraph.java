@@ -24,7 +24,11 @@ import org.apache.zeppelin.display.Input;
 import org.apache.zeppelin.interpreter.*;
 import org.apache.zeppelin.interpreter.Interpreter.FormType;
 import org.apache.zeppelin.interpreter.InterpreterResult.Code;
+import org.apache.zeppelin.resource.Resource;
 import org.apache.zeppelin.resource.ResourcePool;
+import org.apache.zeppelin.resource.ResourcePoolUtils;
+import org.apache.zeppelin.resource.ResourceSet;
+import org.apache.zeppelin.resource.WellKnownResourceName;
 import org.apache.zeppelin.scheduler.Job;
 import org.apache.zeppelin.scheduler.JobListener;
 import org.apache.zeppelin.scheduler.Scheduler;
@@ -184,7 +188,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   public InterpreterResult getResult() {
     return (InterpreterResult) getReturn();
   }
-
+  
   @Override
   public int progress() {
     String replName = getRequiredReplName();
@@ -200,6 +204,7 @@ public class Paragraph extends Job implements Serializable, Cloneable {
   public Map<String, Object> info() {
     return null;
   }
+  
 
   @Override
   protected Object jobRun() throws Throwable {
@@ -281,6 +286,14 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     return true;
   }
 
+  public InterpreterResult getResultFromPool() {
+    ResourceSet resources = ResourcePoolUtils.getAllResources()
+        .filterByParagraphId(this.getId()).filterByNoteId(this.getNote().getId());
+    if (resources.size() > 0)
+      return (InterpreterResult) resources.get(0).get();
+    return null;
+  }
+  
   private InterpreterContext getInterpreterContext() {
     AngularObjectRegistry registry = null;
     ResourcePool resourcePool = null;

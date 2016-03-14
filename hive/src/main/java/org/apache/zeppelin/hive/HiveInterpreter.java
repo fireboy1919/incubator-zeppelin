@@ -333,8 +333,9 @@ public class HiveInterpreter extends Interpreter {
     cmd = cmd.trim();
 
     logger.info("PropertyKey: {}, SQL command: '{}'", propertyKey, cmd);
-
-    return executeSql(propertyKey, cmd, contextInterpreter);
+    InterpreterResult result = executeSql(propertyKey, cmd, contextInterpreter);
+    
+    return result;
   }
 
   private int getMaxResult() {
