@@ -19,10 +19,15 @@ package org.apache.zeppelin.resource;
 
 import com.google.gson.Gson;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.google.gson.GsonBuilder;
 
 =======
 >>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
+=======
+import com.google.gson.GsonBuilder;
+
+>>>>>>> cbdb22d... Added serialization to resourcepoolutils.
 import org.apache.zeppelin.interpreter.InterpreterGroup;
 import org.apache.zeppelin.interpreter.remote.RemoteInterpreterProcess;
 import org.apache.zeppelin.interpreter.thrift.RemoteInterpreterService;
@@ -59,15 +64,22 @@ public class ResourcePoolUtils {
         boolean broken = false;
         try {
           client = remoteInterpreterProcess.getClient();
+<<<<<<< HEAD
           List<String> resourceList = client.resoucePoolGetAll();
 <<<<<<< HEAD
+=======
+          List<String> resourceList = client.resourcePoolGetAll();
+>>>>>>> cbdb22d... Added serialization to resourcepoolutils.
           GsonBuilder gsonBuilder = new GsonBuilder();
           gsonBuilder.registerTypeAdapter(Resource.class, new ResourceSerializer());
           Gson gson = gsonBuilder.create();
           
+<<<<<<< HEAD
 =======
           Gson gson = new Gson();
 >>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
+=======
+>>>>>>> cbdb22d... Added serialization to resourcepoolutils.
           for (String res : resourceList) {
             resourceSet.add(gson.fromJson(res, Resource.class));
           }
