@@ -11,7 +11,11 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 /**
+<<<<<<< HEAD
  * 
+=======
+ * Serializes and Deserializes resources if they are serializable.
+>>>>>>> ffd092b... Added pool persistance.
  */
 public class ResourceSerializer implements JsonDeserializer<Resource>, JsonSerializer<Resource> {
 
@@ -43,4 +47,8 @@ public class ResourceSerializer implements JsonDeserializer<Resource>, JsonSeria
     return new Resource(id, r);
   }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ffd092b... Added pool persistance.
