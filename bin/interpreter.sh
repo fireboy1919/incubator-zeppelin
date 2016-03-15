@@ -23,7 +23,9 @@ function usage() {
     echo "usage) $0 -p <port> -d <interpreter dir to load> -l <local interpreter repo dir to load>"
 }
 
-while getopts "hp:d:l:" o; do
+DEBUG_MODE=false
+
+while getopts "Dhp:d:l:" o; do
     case ${o} in
         h)
             usage
@@ -37,6 +39,9 @@ while getopts "hp:d:l:" o; do
             ;;
         l)
             LOCAL_INTERPRETER_REPO=${OPTARG}
+            ;;
+        D)
+            DEBUG_MODE=false
             ;;
         esac
 done
@@ -68,7 +73,13 @@ ZEPPELIN_SERVER=org.apache.zeppelin.interpreter.remote.RemoteInterpreterServer
 INTERPRETER_ID=$(basename "${INTERPRETER_DIR}")
 ZEPPELIN_PID="${ZEPPELIN_PID_DIR}/zeppelin-interpreter-${INTERPRETER_ID}-${ZEPPELIN_IDENT_STRING}-${HOSTNAME}.pid"
 ZEPPELIN_LOGFILE="${ZEPPELIN_LOG_DIR}/zeppelin-interpreter-${INTERPRETER_ID}-${ZEPPELIN_IDENT_STRING}-${HOSTNAME}.log"
-JAVA_INTP_OPTS+=" -Dzeppelin.log.file=${ZEPPELIN_LOGFILE}"
+
+if [[ $DEBUG_MODE == true ]]; then
+  echo "Going into debug mode."
+  JAVA_INTP_OPTS+=" -Dzeppelin.log.file=${ZEPPELIN_LOGFILE} -agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=y"
+else
+  JAVA_INTP_OPTS+=" -Dzeppelin.log.file=${ZEPPELIN_LOGFILE}"
+fi
 
 if [[ ! -d "${ZEPPELIN_LOG_DIR}" ]]; then
   echo "Log dir doesn't exist, create ${ZEPPELIN_LOG_DIR}"

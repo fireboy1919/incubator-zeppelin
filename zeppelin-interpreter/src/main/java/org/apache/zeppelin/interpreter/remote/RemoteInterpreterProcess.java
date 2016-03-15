@@ -105,12 +105,18 @@ public class RemoteInterpreterProcess implements ExecuteResultHandler {
         cmdLine.addArgument(Integer.toString(port), false);
         cmdLine.addArgument("-l", false);
         cmdLine.addArgument(localRepoDir, false);
-
+        // In debug mode.
+        boolean debug = java.lang.management.ManagementFactory.getRuntimeMXBean().
+                getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+        if (debug)
+        {
+          cmdLine.addArgument("-D", false);
+        }
         executor = new DefaultExecutor();
 
         watchdog = new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT);
         executor.setWatchdog(watchdog);
-
+           
         running = true;
         try {
           Map procEnv = EnvironmentUtils.getProcEnvironment();
@@ -118,6 +124,10 @@ public class RemoteInterpreterProcess implements ExecuteResultHandler {
 
           logger.info("Run interpreter process {}", cmdLine);
           executor.execute(cmdLine, procEnv, this);
+          if (debug) {
+            com.github.marook.eclipse_remote_control.client.Client.main(
+                new String[] {"execute_command", "Debug Remote", "DEBUG"}); 
+          } 
         } catch (IOException e) {
           running = false;
           throw new InterpreterException(e);

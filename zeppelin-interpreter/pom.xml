@@ -214,6 +214,12 @@
       <exclusions>
       </exclusions>
     </dependency>
+    
+    <dependency>
+    	<groupId>com.github.marook</groupId>
+    	<artifactId>eclipse_remote_control</artifactId>
+    	<version>1.0</version>
+    </dependency>
   </dependencies>
 
   <build>
