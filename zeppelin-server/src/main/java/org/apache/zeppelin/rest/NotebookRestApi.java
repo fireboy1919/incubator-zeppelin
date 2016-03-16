@@ -575,6 +575,37 @@ public class NotebookRestApi {
   }
 
   /**
+   * Get paragraph result REST API
+   * @param
+   * @return JSON with status.OK
+   * @throws IOException
+   */
+  @GET
+  @Path("{notebookId}/paragraph/{paragraphId}/result")
+  public Response getParagraphResult(@PathParam("notebookId") String notebookId,
+                                     @PathParam("paragraphId") String paragraphId)
+      throws IOException {
+    LOG.info("Downloading paragraph {} {}", notebookId, paragraphId);
+    
+    Note note = notebook.getNote(notebookId);
+    if (note == null) {
+      return new JsonResponse(Status.NOT_FOUND, "note not found.").build();
+    }
+
+    Paragraph p = note.getParagraph(paragraphId);
+    if (p == null) {
+      return new JsonResponse(Status.NOT_FOUND, "paragraph not found.").build();
+    }
+    
+    ResponseBuilder builder = Response.ok(p.getResultFromPool().message())
+        .header("Content-Disposition", "attachemnt; filename=" + paragraphId + ".txt");
+    
+    return builder.build();
+  }
+
+
+
+  /**
    * Stop(delete) paragraph job REST API
    * @param
    * @return JSON with status.OK
