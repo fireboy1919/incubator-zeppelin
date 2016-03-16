@@ -28,7 +28,10 @@ import org.apache.zeppelin.resource.Resource;
 import org.apache.zeppelin.resource.ResourcePool;
 import org.apache.zeppelin.resource.ResourcePoolUtils;
 import org.apache.zeppelin.resource.ResourceSet;
+<<<<<<< HEAD
 import org.apache.zeppelin.resource.WellKnownResourceName;
+=======
+>>>>>>> 771fef9... Added resource pool endpoint to paragraphs.
 import org.apache.zeppelin.scheduler.Job;
 import org.apache.zeppelin.scheduler.JobListener;
 import org.apache.zeppelin.scheduler.Scheduler;
@@ -285,12 +288,29 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     }
     return true;
   }
+<<<<<<< HEAD
 
+=======
+  
+  /**
+   * Gets the first resource for this paragraph that responds to the interpreter result class.
+   */
+>>>>>>> 771fef9... Added resource pool endpoint to paragraphs.
   public InterpreterResult getResultFromPool() {
     ResourceSet resources = ResourcePoolUtils.getAllResources()
         .filterByParagraphId(this.getId()).filterByNoteId(this.getNote().getId());
     if (resources.size() > 0)
+<<<<<<< HEAD
       return (InterpreterResult) resources.get(0).get();
+=======
+    {
+      for (Resource r: resources)
+      {
+        if (InterpreterResult.class.isAssignableFrom(r.get().getClass()))
+          return (InterpreterResult) r.get();
+      }
+    }
+>>>>>>> 771fef9... Added resource pool endpoint to paragraphs.
     return null;
   }
   
