@@ -134,7 +134,28 @@ public class RemoteInterpreterServer
     System.exit(0);
   }
 
+  private ResourcePool setResourcePool(InterpreterGroup group, RemoteInterpreterEventClient client)
+      throws TException {
+    try {
+      String resourcePoolClassName = (String) group.getProperty()
+          .getOrDefault("ResourcePoolClass",
+              "org.apache.zeppelin.resource.DistributedResourcePool");
+      Class resourcePoolClass = Class.forName(resourcePoolClassName);
 
+      Constructor<ResourcePool> constructor = resourcePoolClass
+          .getConstructor(new Class[] {String.class, ResourcePoolConnector.class, Properties.class });
+      ResourcePool r = constructor.newInstance(group.getId(), client);
+      group.setResourcePool(r);
+      return r;
+    } catch (SecurityException | NoSuchMethodException |
+        InstantiationException | IllegalAccessException |
+        IllegalArgumentException | InvocationTargetException |
+        ClassNotFoundException e) {
+      logger.error(e.toString(), e);
+      throw new TException(e);
+    }
+  }
+  
   @Override
   public void createInterpreter(String interpreterGroupId, String noteId, String
       className,
@@ -144,7 +165,7 @@ public class RemoteInterpreterServer
       angularObjectRegistry = new AngularObjectRegistry(interpreterGroup.getId(), this);
       resourcePool = new DistributedResourcePool(interpreterGroup.getId(), eventClient);
       interpreterGroup.setAngularObjectRegistry(angularObjectRegistry);
-      interpreterGroup.setResourcePool(resourcePool);
+      setResourcePool(interpreterGroup, eventClient);
     }
 
     try {
@@ -343,6 +364,7 @@ public class RemoteInterpreterServer
         }
 
         String interpreterResultMessage = result.message();
+
          
         InterpreterResult combinedResult;
         if (interpreterResultMessage != null && !interpreterResultMessage.isEmpty()) {
@@ -354,6 +376,7 @@ public class RemoteInterpreterServer
         } else {
           combinedResult = new InterpreterResult(result.code(), outputType, message);
         }
+
         
         logger.info("Saving to resource pool.");
         // put result into resource pool

@@ -285,12 +285,21 @@ public class Paragraph extends Job implements Serializable, Cloneable {
     }
     return true;
   }
-
+  
+  /**
+   * Gets the first resource for this paragraph that responds to the interpreter result class.
+   */
   public InterpreterResult getResultFromPool() {
     ResourceSet resources = ResourcePoolUtils.getAllResources()
         .filterByParagraphId(this.getId()).filterByNoteId(this.getNote().getId());
     if (resources.size() > 0)
-      return (InterpreterResult) resources.get(0).get();
+    {
+      for (Resource r: resources)
+      {
+        if (InterpreterResult.class.isAssignableFrom(r.get().getClass()))
+          return (InterpreterResult) r.get();
+      }
+    }
     return null;
   }
   

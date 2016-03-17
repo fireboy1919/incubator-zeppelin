@@ -23,8 +23,6 @@ import java.nio.ByteBuffer;
  * Information and reference to the resource
  */
 public class Resource {
-  // Not really sure why this is marked transient.
-  // We can't make use of it if it's not transmitted when you request it.
   private final Object r;
   private final boolean serializable;
   private final ResourceId resourceId;
