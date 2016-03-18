@@ -134,7 +134,35 @@ public class RemoteInterpreterServer
     System.exit(0);
   }
 
+<<<<<<< HEAD
 
+=======
+  private ResourcePool setResourcePool(InterpreterGroup group, RemoteInterpreterEventClient client)
+      throws TException {
+    try {
+      String resourcePoolClassName = (String) group.getProperty()
+          .getOrDefault("ResourcePoolClass",
+              "org.apache.zeppelin.resource.DistributedResourcePool");
+      logger.debug("Getting resource pool {}", resourcePoolClassName);
+      Class resourcePoolClass = Class.forName(resourcePoolClassName);
+
+      Constructor<ResourcePool> constructor = resourcePoolClass
+          .getConstructor(new Class[] {String.class,
+            ResourcePoolConnector.class,
+            Properties.class });
+      ResourcePool r = constructor.newInstance(group.getId(), client, group.getProperty());
+      group.setResourcePool(r);
+      return r;
+    } catch (SecurityException | NoSuchMethodException |
+        InstantiationException | IllegalAccessException |
+        IllegalArgumentException | InvocationTargetException |
+        ClassNotFoundException e) {
+      logger.error(e.toString(), e);
+      throw new TException(e);
+    }
+  }
+  
+>>>>>>> c7d8307... Fixed result.
   @Override
   public void createInterpreter(String interpreterGroupId, String noteId, String
       className,
@@ -142,7 +170,6 @@ public class RemoteInterpreterServer
     if (interpreterGroup == null) {
       interpreterGroup = new InterpreterGroup(interpreterGroupId);
       angularObjectRegistry = new AngularObjectRegistry(interpreterGroup.getId(), this);
-      resourcePool = new DistributedResourcePool(interpreterGroup.getId(), eventClient);
       interpreterGroup.setAngularObjectRegistry(angularObjectRegistry);
       interpreterGroup.setResourcePool(resourcePool);
     }
