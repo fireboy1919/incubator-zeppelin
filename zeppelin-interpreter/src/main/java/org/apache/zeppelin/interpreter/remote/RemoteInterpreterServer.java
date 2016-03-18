@@ -140,11 +140,14 @@ public class RemoteInterpreterServer
       String resourcePoolClassName = (String) group.getProperty()
           .getOrDefault("ResourcePoolClass",
               "org.apache.zeppelin.resource.DistributedResourcePool");
+      logger.debug("Getting resource pool {}", resourcePoolClassName);
       Class resourcePoolClass = Class.forName(resourcePoolClassName);
 
       Constructor<ResourcePool> constructor = resourcePoolClass
-          .getConstructor(new Class[] {String.class, ResourcePoolConnector.class, Properties.class });
-      ResourcePool r = constructor.newInstance(group.getId(), client);
+          .getConstructor(new Class[] {String.class,
+            ResourcePoolConnector.class,
+            Properties.class });
+      ResourcePool r = constructor.newInstance(group.getId(), client, group.getProperty());
       group.setResourcePool(r);
       return r;
     } catch (SecurityException | NoSuchMethodException |
@@ -163,7 +166,6 @@ public class RemoteInterpreterServer
     if (interpreterGroup == null) {
       interpreterGroup = new InterpreterGroup(interpreterGroupId);
       angularObjectRegistry = new AngularObjectRegistry(interpreterGroup.getId(), this);
-      resourcePool = new DistributedResourcePool(interpreterGroup.getId(), eventClient);
       interpreterGroup.setAngularObjectRegistry(angularObjectRegistry);
       setResourcePool(interpreterGroup, eventClient);
     }
