@@ -1,7 +1,6 @@
 package org.apache.zeppelin.resource;
 
 import org.slf4j.Logger;
-import org.apache.zeppelin.conf.ZeppelinConfiguration;
 
 import java.io.File;
 import java.io.IOException;

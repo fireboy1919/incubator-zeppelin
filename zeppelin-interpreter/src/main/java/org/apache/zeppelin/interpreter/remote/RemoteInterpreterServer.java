@@ -136,14 +136,20 @@ public class RemoteInterpreterServer
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 =======
 >>>>>>> e86103b... Added remote interpreter.
   private ResourcePool setResourcePool(InterpreterGroup group, RemoteInterpreterEventClient client)
+=======
+  private ResourcePool setResourcePool(InterpreterGroup group,
+      Properties prop,
+      RemoteInterpreterEventClient client)
+>>>>>>> b4183fd... Fixed resource pool.
       throws TException {
     try {
-      String resourcePoolClassName = (String) group.getProperty()
+      String resourcePoolClassName = (String) prop 
           .getOrDefault("ResourcePoolClass",
               "org.apache.zeppelin.resource.DistributedResourcePool");
       logger.debug("Getting resource pool {}", resourcePoolClassName);
@@ -174,13 +180,17 @@ public class RemoteInterpreterServer
       interpreterGroup = new InterpreterGroup(interpreterGroupId);
       angularObjectRegistry = new AngularObjectRegistry(interpreterGroup.getId(), this);
       interpreterGroup.setAngularObjectRegistry(angularObjectRegistry);
+<<<<<<< HEAD
       interpreterGroup.setResourcePool(resourcePool);
+=======
+>>>>>>> b4183fd... Fixed resource pool.
     }
 
     try {
       Class<Interpreter> replClass = (Class<Interpreter>) Object.class.forName(className);
       Properties p = new Properties();
       p.putAll(properties);
+      setResourcePool(interpreterGroup, p, eventClient);
 
       Constructor<Interpreter> constructor =
           replClass.getConstructor(new Class[] {Properties.class});
