@@ -41,7 +41,7 @@ while getopts "Dhp:d:l:" o; do
             LOCAL_INTERPRETER_REPO=${OPTARG}
             ;;
         D)
-            DEBUG_MODE=false
+            DEBUG_MODE=true
             ;;
         esac
 done
@@ -78,6 +78,7 @@ if [[ $DEBUG_MODE == true ]]; then
   echo "Going into debug mode."
   JAVA_INTP_OPTS+=" -Dzeppelin.log.file=${ZEPPELIN_LOGFILE} -agentlib:jdwp=transport=dt_socket,server=y,address=5005,suspend=y"
 else
+  echo "No debug mode. $DEBUG_MODE"
   JAVA_INTP_OPTS+=" -Dzeppelin.log.file=${ZEPPELIN_LOGFILE}"
 fi
 
