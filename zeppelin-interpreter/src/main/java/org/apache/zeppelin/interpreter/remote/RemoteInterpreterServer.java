@@ -135,8 +135,11 @@ public class RemoteInterpreterServer
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> e86103b... Added remote interpreter.
   private ResourcePool setResourcePool(InterpreterGroup group, RemoteInterpreterEventClient client)
       throws TException {
     try {
