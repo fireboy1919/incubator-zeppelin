@@ -40,6 +40,8 @@ import org.apache.zeppelin.notebook.Notebook;
 import org.apache.zeppelin.notebook.NotebookAuthorization;
 import org.apache.zeppelin.notebook.Paragraph;
 import org.apache.zeppelin.resource.Resource;
+import org.apache.zeppelin.resource.ResourcePoolUtils;
+import org.apache.zeppelin.resource.ResourceSet;
 import org.apache.zeppelin.rest.message.CronRequest;
 import org.apache.zeppelin.rest.message.InterpreterSettingListForNoteBind;
 import org.apache.zeppelin.rest.message.NewNotebookRequest;
@@ -56,6 +58,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import java.io.StringReader;
 /**
@@ -544,6 +547,27 @@ public class NotebookRestApi {
     return new JsonResponse<>(Status.OK).build();
   }
 
+  /**
+   * Get paragraphs that have a resource pool and what note they came from.
+   * @param
+   * @return JSON with status.OK
+   */
+  @GET
+  @Path("/results")
+  public Response getParagraphsWithResults(@PathParam("notebookId") String notebookId) 
+      throws IOException {
+    LOG.info("Getting paragraphs from {}", notebookId);
+    ResourceSet resources = ResourcePoolUtils.getAllResources();
+    Gson gson = new Gson();
+    Dictionary<String, String> results = new Hashtable<String, String>();
+    for (Resource resource: resources) {
+      // results[resource.getResourceId().getParagraphId()]
+      results.put( resource.getResourceId().getParagraphId(), resource.getResourceId().getNoteId());
+    }
+    return new JsonResponse<>(Status.OK, results).build();
+  }
+  
+  
   /**
    * Get paragraph result REST API
    * @param
