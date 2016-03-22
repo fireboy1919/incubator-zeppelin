@@ -154,7 +154,7 @@ public class VFSResourcePool extends DistributedResourcePool {
     super(id, connector, property);
     try {
       this.filesystemRoot = new 
-          URI(property.getProperty("Resource_Path", "notebook/zeppelin_resources"));
+          URI(property.getProperty("Resource_Path", "../notebook/zeppelin_resources"));
     } catch (URISyntaxException e1) {
       throw new RuntimeException(e1);
     }
