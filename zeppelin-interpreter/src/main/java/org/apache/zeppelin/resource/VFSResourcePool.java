@@ -114,7 +114,7 @@ public class VFSResourcePool extends DistributedResourcePool {
 
   @Override
   public ResourceSet getAll() {
-    return super.getAll(true);
+    return getAll(true);
   }
 
   @Override
@@ -131,8 +131,9 @@ public class VFSResourcePool extends DistributedResourcePool {
     catch (IOException ex) {
       throw new RuntimeException(ex);
     }
+    /*
     if (remote)
-      resources.addAll(super.getAll(remote));
+      resources.addAll(super.getAll(remote)); */
     return resources; 
   }
 
