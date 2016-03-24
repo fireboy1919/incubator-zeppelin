@@ -47,7 +47,8 @@ enum RemoteInterpreterEventType {
   RESOURCE_POOL_GET_ALL = 6,
   RESOURCE_GET = 7
   OUTPUT_APPEND = 8,
-  OUTPUT_UPDATE = 9
+  OUTPUT_UPDATE = 9,
+  ANGULAR_REGISTRY_PUSH=10
 }
 
 struct RemoteInterpreterEvent {
@@ -76,7 +77,7 @@ service RemoteInterpreterService {
   // as a response, ZeppelinServer send serialized value of resource
   void resourceResponseGet(1: string resourceId, 2: binary object);
   // get all resources in the interpreter process
-  list<string> resoucePoolGetAll();
+  list<string> resourcePoolGetAll();
   // get value of resource
   binary resourceGet(1: string noteId, 2: string paragraphId, 3: string resourceName);
   // remove resource
@@ -86,4 +87,5 @@ service RemoteInterpreterService {
   object);
   void angularObjectAdd(1: string name, 2: string noteId, 3: string paragraphId, 4: string object);
   void angularObjectRemove(1: string name, 2: string noteId, 3: string paragraphId);
+  void angularRegistryPush(1: string registry);
 }

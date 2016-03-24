@@ -677,7 +677,7 @@ public class RemoteInterpreterServer
   }
 
   @Override
-  public List<String> resoucePoolGetAll() throws TException {
+  public List<String> resourcePoolGetAll() throws TException {
     logger.debug("Request getAll from ZeppelinServer");
 
     ResourceSet resourceSet = resourcePool.getAll(false);
@@ -714,6 +714,18 @@ public class RemoteInterpreterServer
         logger.error(e.getMessage(), e);
         return ByteBuffer.allocate(0);
       }
+    }
+  }
+
+  @Override
+  public void angularRegistryPush(String registryAsString) throws TException {
+    try {
+      Map<String, Map<String, AngularObject>> deserializedRegistry = gson
+              .fromJson(registryAsString,
+                      new TypeToken<Map<String, Map<String, AngularObject>>>() { }.getType());
+      interpreterGroup.getAngularObjectRegistry().setRegistry(deserializedRegistry);
+    } catch (Exception e) {
+      logger.info("Exception in RemoteInterpreterServer while angularRegistryPush, nolock", e);
     }
   }
 }
