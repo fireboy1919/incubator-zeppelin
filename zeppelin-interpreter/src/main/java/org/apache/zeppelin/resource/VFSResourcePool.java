@@ -131,9 +131,8 @@ public class VFSResourcePool extends DistributedResourcePool {
     catch (IOException ex) {
       throw new RuntimeException(ex);
     }
-    /*
     if (remote)
-      resources.addAll(super.getAll(remote)); */
+      resources.addAll(super.getAll(remote));
     return resources; 
   }
 

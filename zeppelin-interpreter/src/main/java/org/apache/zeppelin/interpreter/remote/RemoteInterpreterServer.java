@@ -133,13 +133,16 @@ public class RemoteInterpreterServer
     remoteInterpreterServer.join();
     System.exit(0);
   }
-
-  private ResourcePool setResourcePool(InterpreterGroup group,
+  
+  private DistributedResourcePool getResourcePool()
+ /* InterpreterGroup group,
       Properties prop,
-      RemoteInterpreterEventClient client)
+      RemoteInterpreterEventClient client) */
       throws TException {
+    if (resourcePool != null)
+      return resourcePool;
     try {
-      String resourcePoolClassName = (String) prop 
+      String resourcePoolClassName = (String) interpreterGroup.getProperty()
           .getOrDefault("ResourcePoolClass",
               "org.apache.zeppelin.resource.DistributedResourcePool");
       logger.debug("Getting resource pool {}", resourcePoolClassName);
@@ -149,9 +152,11 @@ public class RemoteInterpreterServer
           .getConstructor(new Class[] {String.class,
             ResourcePoolConnector.class,
             Properties.class });
-      ResourcePool r = constructor.newInstance(group.getId(), client, group.getProperty());
-      group.setResourcePool(r);
-      return r;
+      resourcePool = (DistributedResourcePool) constructor.newInstance(interpreterGroup.getId(),
+          this.eventClient,
+          interpreterGroup.getProperty());
+      interpreterGroup.setResourcePool(resourcePool);
+      return resourcePool;
     } catch (SecurityException | NoSuchMethodException |
         InstantiationException | IllegalAccessException |
         IllegalArgumentException | InvocationTargetException |
@@ -175,12 +180,11 @@ public class RemoteInterpreterServer
       Class<Interpreter> replClass = (Class<Interpreter>) Object.class.forName(className);
       Properties p = new Properties();
       p.putAll(properties);
-      setResourcePool(interpreterGroup, p, eventClient);
 
       Constructor<Interpreter> constructor =
           replClass.getConstructor(new Class[] {Properties.class});
       Interpreter repl = constructor.newInstance(p);
-
+      
       ClassLoader cl = ClassLoader.getSystemClassLoader();
       repl.setClassloaderUrls(new URL[]{});
 
@@ -195,7 +199,12 @@ public class RemoteInterpreterServer
       }
 
       logger.info("Instantiate interpreter {}", className);
+      
+      interpreterGroup.setResourcePool(getResourcePool());
+      
       repl.setInterpreterGroup(interpreterGroup);
+      
+      //setResourcePool(interpreterGroup, p, eventClient);
     } catch (ClassNotFoundException | NoSuchMethodException | SecurityException
         | InstantiationException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException e) {
@@ -679,8 +688,7 @@ public class RemoteInterpreterServer
   @Override
   public List<String> resourcePoolGetAll() throws TException {
     logger.debug("Request getAll from ZeppelinServer");
-
-    ResourceSet resourceSet = resourcePool.getAll(false);
+    ResourceSet resourceSet = getResourcePool().getAll(false);
     List<String> result = new LinkedList<String>();
     Gson gson = new Gson();
 
@@ -695,7 +703,7 @@ public class RemoteInterpreterServer
   @Override
   public boolean resourceRemove(String noteId, String paragraphId, String resourceName)
       throws TException {
-    Resource resource = resourcePool.remove(noteId, paragraphId, resourceName);
+    Resource resource = getResourcePool().remove(noteId, paragraphId, resourceName);
     return resource != null;
   }
 
@@ -703,7 +711,7 @@ public class RemoteInterpreterServer
   public ByteBuffer resourceGet(String noteId, String paragraphId, String resourceName)
       throws TException {
     logger.debug("Request resourceGet {} from ZeppelinServer", resourceName);
-    Resource resource = resourcePool.get(noteId, paragraphId, resourceName, false);
+    Resource resource = getResourcePool().get(noteId, paragraphId, resourceName);
 
     if (resource == null || resource.get() == null || !resource.isSerializable()) {
       return ByteBuffer.allocate(0);
