@@ -554,17 +554,19 @@ public class NotebookRestApi {
    */
   @GET
   @Path("/results")
-  public Response getParagraphsWithResults(@PathParam("notebookId") String notebookId) 
+  public Response getParagraphsWithResults() 
       throws IOException {
-    LOG.info("Getting paragraphs from {}", notebookId);
+    LOG.info("Getting paragraphs from all notes");
     ResourceSet resources = ResourcePoolUtils.getAllResources();
-    Gson gson = new Gson();
-    Dictionary<String, String> results = new Hashtable<String, String>();
-    for (Resource resource: resources) {
-      // results[resource.getResourceId().getParagraphId()]
-      results.put( resource.getResourceId().getParagraphId(), resource.getResourceId().getNoteId());
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(Note.class, new NoteRestSerializer(resources));
+    List<Note> notes = new ArrayList<Note>();
+    for (Resource r: resources) {
+      notes.add(notebook.getNote(r.getResourceId().getNoteId()));
     }
-    return new JsonResponse<>(Status.OK, results).build();
+    
+    Gson gson = builder.create();
+    return new JsonResponse<>(Status.OK, gson.toJsonTree(notes).getAsJsonArray()).build();
   }
   
   
