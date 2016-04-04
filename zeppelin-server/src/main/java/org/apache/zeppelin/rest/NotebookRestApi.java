@@ -565,8 +565,11 @@ public class NotebookRestApi {
       notes.add(notebook.getNote(r.getResourceId().getNoteId()));
     }
     
-    Gson gson = builder.create();
-    return new JsonResponse<>(Status.OK, gson.toJsonTree(notes).getAsJsonArray()).build();
+    // Want to control how the element is built, but not return it as a
+    // singleton of type element.
+    // If we add this as a JSON Array rather than including it with the builder, then it adds a pesky
+    //  "element" field to the middle of the result.
+    return new JsonResponse<>(Status.OK, "", notes, builder).build();
   }
   
   
