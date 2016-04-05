@@ -65,6 +65,7 @@ public class ResourcePoolUtils {
         try {
           client = remoteInterpreterProcess.getClient();
 <<<<<<< HEAD
+<<<<<<< HEAD
           List<String> resourceList = client.resoucePoolGetAll();
 <<<<<<< HEAD
 =======
@@ -76,6 +77,9 @@ public class ResourcePoolUtils {
           
 <<<<<<< HEAD
 =======
+=======
+          List<String> resourceList = client.resourcePoolGetAll();
+>>>>>>> 2fcc42b... Fixed typo in resource pool usage.
           Gson gson = new Gson();
 >>>>>>> 85a2ad3... [ZEPPELIN-713] Expand ResourceId and put InterpreterResult into ResourcePool
 =======
@@ -127,7 +131,7 @@ public class ResourcePoolUtils {
         boolean broken = false;
         try {
           client = remoteInterpreterProcess.getClient();
-          List<String> resourceList = client.resoucePoolGetAll();
+          List<String> resourceList = client.resourcePoolGetAll();
           Gson gson = new Gson();
           for (String res : resourceList) {
             resourceSet.add(gson.fromJson(res, Resource.class));
